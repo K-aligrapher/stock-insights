@@ -3,7 +3,7 @@ import streamlit as st
 import plotly.graph_objects as go
 import pandas as pd
 from forecasting import get_stock_data, prophet_forecast, lstm_forecast
-from sentiment import analyze_sentiment
+from sentiment import analyze_sentiment, get_financial_news
 
 st.set_page_config(page_title="AI Stock Market Insights", layout="wide")
 st.title("📈 AI-Powered Stock Market Insights")
@@ -89,7 +89,7 @@ if st.button("Analyze"):
     st.subheader("Market Sentiment")
 
     # Fetch real news headlines for the given ticker
-    news_headlines = fetch_stock_news(ticker)
+    news_headlines = get_financial_news(ticker)
 
     # If news headlines were successfully fetched, analyze their sentiment
     if news_headlines:

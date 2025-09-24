@@ -1,68 +1,49 @@
 import os
 import streamlit as st
-from newsapi import NewsApiClient
 from transformers import pipeline
 import logging
 
-# Set up logging to catch any errors
-logging.basicConfig(level=logging.INFO)
+# Removed the NewsAPI-related imports
 
 # --- Configuration ---
-# Store your API key in an environment variable for security
-# It is better to use `os.environ.get()` in a real app
-# But for a simple script, you can define it here.
-NEWSAPI_KEY = "e2dacd0e1b9c48c8a3a92119f81e1cca"
+# You can leave your API key here, but the code will use the mocked data
+NEWSAPI_KEY = " YUMJ60VLYDEK3GM0"
 
 # Load FinBERT model for financial sentiment analysis
 @st.cache_resource
 def load_sentiment_model():
-    """Load the FinBERT model and cache it to avoid re-downloading."""
     return pipeline("sentiment-analysis", model="yiyanghkust/finbert-tone")
 
 sentiment_model = load_sentiment_model()
 
-# --- News API Integration ---
-@st.cache_data(show_spinner="Fetching recent financial news...")
+# --- Mocked News Data ---
 def get_financial_news(ticker: str, num_articles: int = 10):
     """
-    Fetches the latest financial news headlines for a given stock ticker
-    using the NewsAPI.
+    Returns a mocked list of news headlines for development purposes.
     """
-    if not NEWSAPI_KEY or NEWSAPI_KEY == "e2dacd0e1b9c48c8a3a92119f81e1cca":
-        logging.warning("NewsAPI key is not set. Cannot fetch real news.")
-        return []
-
-    try:
-        newsapi = NewsApiClient(api_key=NEWSAPI_KEY)
-        
-        # Use the 'everything' endpoint to search for the ticker
-        # Sorting by 'relevancy' ensures the most relevant articles are returned first.
-        articles = newsapi.get_everything(
-            q=f"stock {ticker}", # Query for the stock ticker
-            language="en",
-            sort_by="relevancy",
-            page_size=num_articles
-        )
-
-        headlines = [article.get('title') for article in articles.get('articles', []) if article.get('title')]
-        logging.info(f"Successfully fetched {len(headlines)} headlines for {ticker}.")
-        return headlines
-
-    except Exception as e:
-        logging.error(f"Error fetching news for {ticker}: {e}")
-        return []
-
+    # Replace the API call with a simple, hardcoded list of headlines.
+    # This allows the rest of your app to function.
+    st.info("Using mocked news data since the API key is not working.")
+    
+    # You can add more headlines and sentiments to test different scenarios
+    return [
+        f"Analysts say {ticker} stock has a strong buy rating today.",
+        f"Concerns about {ticker} supply chain issues are rising.",
+        f"The market sentiment for {ticker} is mixed.",
+        f"{ticker} announces record-breaking quarterly earnings.",
+        f"A new lawsuit is filed against {ticker} over recent product recall.",
+        f"No significant news on {ticker} has been reported recently."
+    ]
 
 # --- Sentiment Analysis Logic ---
 def analyze_sentiment(texts: list):
     """
-    Analyzes the sentiment of a list of texts and returns the percentage
-    of positive, negative, and neutral sentiments.
+    Analyzes the sentiment of a list of texts...
+    (The rest of this function remains the same as your original code)
     """
     if not texts:
         return {"positive": 0, "negative": 0, "neutral": 0}
 
-    # Perform sentiment analysis in batches for efficiency
     try:
         results = sentiment_model(texts)
     except Exception as e:
@@ -88,7 +69,7 @@ if __name__ == "__main__":
     test_ticker = "TSLA"
     news = get_financial_news(test_ticker)
     if news:
-        print(f"Found {len(news)} articles for {test_ticker}:")
+        print(f"Using mocked articles for {test_ticker}:")
         for i, headline in enumerate(news):
             print(f"{i+1}. {headline}")
         
