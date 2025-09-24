@@ -41,7 +41,7 @@ This command will start a local Streamlit server and open the application in you
 ## 🔗 Deployment
 You can deploy this application using a service like Streamlit Community Cloud.
 
-View the live app here: [https://ai-stock-market-insights.streamlit.app/]
+View the live app here: [AI-Powered Stock Market Insights](https://ai-stock-market-insights.streamlit.app/)
 
 ## 🛠 Tech Stack
 
