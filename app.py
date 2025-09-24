@@ -126,7 +126,6 @@ if st.button("Analyze"):
     # ----------------------------
     # 6. Debug Info
     # ----------------------------
-    ''' 
-    st.write("Data head:", data.head())
-    st.write("Forecast head:", forecast.head())
-    '''
+    #st.write("Data head:", data.head())
+    #st.write("Forecast head:", forecast.head())
+    
