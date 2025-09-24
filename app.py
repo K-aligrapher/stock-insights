@@ -25,7 +25,11 @@ if st.button("Analyze"):
     # ----------------------------
     # 2. Prophet Forecast
     # ----------------------------
-    forecast,df_prophet = prophet_forecast(data, periods=30)
+    if data.empty:
+      st.error("Error: No data was found for this ticker symbol. Please check the symbol and try again.")
+      st.stop() # Stops the app execution gracefully
+    else:
+      forecast, df_prophet = prophet_forecast(data, periods=30)
 
     # Plot actual + forecast
     fig = go.Figure()
