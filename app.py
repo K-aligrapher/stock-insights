@@ -87,12 +87,17 @@ if st.button("Analyze"):
     # 4. Sentiment Analysis (FinBERT)
     # ----------------------------
     st.subheader("Market Sentiment")
-    sample_texts = [
-        f"{ticker} stock is expected to rise due to strong demand.",
-        f"Investors worry about {ticker} production delays.",
-        f"Analysts say {ticker} is performing stable this quarter."
-    ]
-    sentiment = analyze_sentiment(sample_texts)
+
+    # Fetch real news headlines for the given ticker
+    news_headlines = fetch_stock_news(ticker)
+
+    # If news headlines were successfully fetched, analyze their sentiment
+    if news_headlines:
+        sentiment = analyze_sentiment(news_headlines)
+    else:
+        # Handle the case where no news could be found
+        st.write("Could not fetch recent news for this ticker.")
+        sentiment = {"positive": 0, "negative": 0, "neutral": 0}
 
     col1, col2, col3 = st.columns(3)
     col1.metric("Positive", f"{sentiment['positive']}%")
