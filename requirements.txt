@@ -1,0 +1,12 @@
+yfinance
+pandas
+numpy
+matplotlib
+plotly
+scikit-learn
+prophet
+tensorflow
+tweepy
+transformers
+torch
+streamlit

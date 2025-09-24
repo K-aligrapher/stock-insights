@@ -1,0 +1,89 @@
+# =======================
+# 1. Import Libraries
+# =======================
+import pandas as pd
+import numpy as np
+import matplotlib.pyplot as plt
+import seaborn as sns
+import yfinance as yf
+from wordcloud import WordCloud
+
+# Plot styling
+plt.style.use("seaborn-v0_8")
+sns.set_palette("viridis")
+# =======================
+# 2. Load Stock Data
+# =======================
+ticker = "TSLA"
+stock = yf.download(ticker, start="2020-01-01", end="2024-01-01")
+stock.head()
+# =======================
+# 3. Stock Price EDA
+# =======================
+
+# Closing price over time
+plt.figure(figsize=(12,6))
+plt.plot(stock.index, stock['Close'], label=f"{ticker} Close Price")
+plt.title(f"{ticker} Stock Closing Price")
+plt.xlabel("Date")
+plt.ylabel("Price (USD)")
+plt.legend()
+plt.show()
+
+# Moving averages
+stock['MA50'] = stock['Close'].rolling(50).mean()
+stock['MA200'] = stock['Close'].rolling(200).mean()
+
+plt.figure(figsize=(12,6))
+plt.plot(stock['Close'], label="Close")
+plt.plot(stock['MA50'], label="50-day MA")
+plt.plot(stock['MA200'], label="200-day MA")
+plt.title(f"{ticker} - Moving Averages")
+plt.legend()
+plt.show()
+
+# Daily returns distribution
+stock['Daily Return'] = stock['Close'].pct_change()
+sns.histplot(stock['Daily Return'].dropna(), bins=50, kde=True)
+plt.title(f"{ticker} Daily Returns Distribution")
+plt.show()
+# =======================
+# 4. Load Tweets Dataset
+# =======================
+
+# Example: load tweets.csv (already pre-scraped or Kaggle dataset)
+# Format: date, tweet_text, label (optional)
+tweets = pd.read_csv("../data/tweets.csv")
+tweets.head()
+# =======================
+# 5. Sentiment Distribution
+# =======================
+if "label" in tweets.columns:
+    sns.countplot(data=tweets, x="label", order=tweets["label"].value_counts().index)
+    plt.title("Sentiment Distribution")
+    plt.show()
+# =======================
+# 6. Word Cloud of Tweets
+# =======================
+text = " ".join(tweet for tweet in tweets["tweet_text"])
+wordcloud = WordCloud(width=800, height=400, background_color="white").generate(text)
+
+plt.figure(figsize=(12,6))
+plt.imshow(wordcloud, interpolation="bilinear")
+plt.axis("off")
+plt.title("Word Cloud of Stock-Related Tweets")
+plt.show()
+# =======================
+# 7. Stock vs Sentiment Trend (Optional)
+# =======================
+# Example: If tweets have daily sentiment scores
+if "date" in tweets.columns and "label" in tweets.columns:
+    sentiment_trend = tweets.groupby("date")["label"].apply(lambda x: (x=="positive").sum() - (x=="negative").sum())
+    sentiment_trend = sentiment_trend.reindex(stock.index, method="ffill")
+
+    plt.figure(figsize=(12,6))
+    plt.plot(stock.index, stock['Close'], label="Stock Price", color="blue")
+    plt.plot(sentiment_trend.index, sentiment_trend, label="Sentiment Score", color="red")
+    plt.title("Stock Price vs Sentiment Trend")
+    plt.legend()
+    plt.show()
